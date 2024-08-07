@@ -17,7 +17,7 @@ Nimbus is a cutting-edge tool designed to enhance personal finance management th
 ### **Instructions : After Accepting GitHub Invites**
 
 1. **Clone the Repository:**
-   After accepting the invite, clone the repository to your local machine using the link below:
+   After accepting the invite, open your terminal and clone the repository to your local machine using the link below:
 
    ```bash
    git clone https://github.com/Si-kaR/NIMBUS.git
