@@ -12,7 +12,7 @@ Nimbus is a cutting-edge tool designed to enhance personal finance management th
 
 
 
-# PLEASE READ ---
+# PLEASE READ ---------------------------------------------------------------------------------
 
 ### **Instructions : After Accepting GitHub Invites**
 
