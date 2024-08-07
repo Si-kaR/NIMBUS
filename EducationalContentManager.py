@@ -3,12 +3,12 @@ class EducationalContentManager:
         self.db = db
 
     # Create
-    def add_educational_content(self, title, content_type, content, topic):
+    def add_educational_content(self, title, content_type, content, topic, risk):
         query = """
-        INSERT INTO EducationalContent (Title, ContentType, Content, Topic)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO EducationalContent (Title, ContentType, Content, Topic, risk_type, CreatedAt)
+        VALUES (%s, %s, %s, %s, %s, NOW())
         """
-        params = (title, content_type, content, topic)
+        params = (title, content_type, content, topic, risk)
         self.db.execute_query(query, params)
 
     # Read
