@@ -1,7 +1,7 @@
 import pathlib
 import re
 import textwrap
-
+import os
 import google.generativeai as genai
 from markdown import Markdown
 
@@ -17,7 +17,9 @@ def extract_title_and_content(response_text):
     content = '\n'.join(lines[2:]).strip() if len(lines) > 2 else ""
     return title, content
 
-genai.configure(api_key='AIzaSyDqUzqUQV-LEl9kIcX9OhFp6j4jeHug_Ow')
+
+api_key = os.getenv('GOOGLE_API_KEY')
+genai.configure(api_key=api_key)
 
 def generate_content(risk_tolerances):
     categories = ['PersonalFinance', 'Budgeting', 'Investing']
