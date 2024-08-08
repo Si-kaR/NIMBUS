@@ -3,45 +3,41 @@ class UserManager:
         self.db = db
 
     # Create
-    def add_user(self, username, password_hash, email, risk_tolerance='Medium'):
+    def add_user(self, user_id, username, risk_id):
         query = """
-        INSERT INTO Users (Username, PasswordHash, Email, RiskTolerance)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO Users (user_id, username, risk_id)
+        VALUES (%s, %s, %s)
         """
-        params = (username, password_hash, email, risk_tolerance)
+        params = (user_id, username, risk_id)
         self.db.execute_query(query, params)
 
     # Read
     def get_user(self, user_id=None):
         if user_id:
-            query = "SELECT * FROM Users WHERE UserID = %s"
+            query = "SELECT * FROM Users WHERE user_id = %s"
             return self.db.fetch_one(query, (user_id,))
         else:
             query = "SELECT * FROM Users"
             return self.db.fetch_all(query)
 
     # Update
-    def update_user(self, user_id, username=None, password_hash=None, email=None, risk_tolerance=None):
+    def update_user(self, user_id, username=None, risk_id=None):
         query = "UPDATE Users SET "
         params = []
         if username:
-            query += "Username = %s, "
+            query += "username = %s, "
             params.append(username)
-        if password_hash:
-            query += "PasswordHash = %s, "
-            params.append(password_hash)
-        if email:
-            query += "Email = %s, "
-            params.append(email)
-        if risk_tolerance:
-            query += "RiskTolerance = %s, "
-            params.append(risk_tolerance)
+        if risk_id:
+            query += "risk_id = %s, "
+            params.append(risk_id)
         query = query.rstrip(', ')
-        query += " WHERE UserID = %s"
+        query += " WHERE user_id = %s"
         params.append(user_id)
         self.db.execute_query(query, params)
 
     # Delete
     def delete_user(self, user_id):
-        query = "DELETE FROM Users WHERE UserID = %s"
+        query = "DELETE FROM Users WHERE user_id = %s"
         self.db.execute_query(query, (user_id,))
+
+    
