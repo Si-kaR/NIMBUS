@@ -16,21 +16,16 @@ class FAQManager:
         
         try:
             # Execute the SELECT query
-            self.cursor.execute(query_select, (question,))
-            result = self.cursor.fetchone()
+            result = self.db.fetch_one(query_select, (question,))
             
             if result:
                 # If a row was returned, update the frequency by 1
-                self.cursor.execute(query_update, (question,))
+                self.db.execute_query(query_update, (question,))
             else:
                 # If no row was returned, insert a new record with frequency set to 1
-                self.cursor.execute(query_insert, (question,))
+                self.db.execute_query(query_insert, (question,))
             
-            # Commit the transaction
-            self.connection.commit()
         except Exception as e:
-            # Rollback the transaction in case of an error
-            self.connection.rollback()
             print(f"Error: {e}")
 
     # Read
@@ -39,8 +34,7 @@ class FAQManager:
         SELECT search_term FROM frequent_terms ORDER BY frequency DESC LIMIT %s
         """
         try:
-            self.cursor.execute(query, (number_of_results,))
-            result = self.cursor.fetchall()
+            result = self.db.fetch_all(query, (number_of_results,))
             return result
         except Exception as e:
             print(f"Error: {e}")
@@ -52,10 +46,8 @@ class FAQManager:
         DELETE FROM frequent_terms WHERE search_term = %s
         """
         try:
-            self.cursor.execute(query, (question,))
-            self.connection.commit()
+            self.db.execute_query(query, (question,))
         except Exception as e:
-            self.connection.rollback()
             print(f"Error: {e}")
 
     # Update
@@ -64,10 +56,8 @@ class FAQManager:
         UPDATE frequent_terms SET search_term = %s WHERE search_term = %s
         """
         try:
-            self.cursor.execute(query, (new_question, old_question))
-            self.connection.commit()
+            self.db.execute_query(query, (new_question, old_question))
         except Exception as e:
-            self.connection.rollback()
             print(f"Error: {e}")
 
     # Read All
@@ -76,9 +66,8 @@ class FAQManager:
         SELECT * FROM frequent_terms
         """
         try:
-            self.cursor.execute(query)
-            result = self.cursor.fetchall()
+            result = self.db.fetch_all(query)
             return result
         except Exception as e:
             print(f"Error: {e}")
-            return None    
+            return None
