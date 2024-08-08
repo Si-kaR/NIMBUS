@@ -49,7 +49,7 @@ def get_user():
     - response (json): A JSON object containing the user data.
     """
     try:
-        user_id = request.form('username')
+        user_id = request.form['username']
         user_data = user_manager.get_user_id_by_username(user_id)
         return jsonify({'status': 'success', 'user_data': user_data})
     except Exception as e:
@@ -67,7 +67,7 @@ def get_definition():
     - response (json): A JSON object containing the definition of the term.
     """
     try:
-        term = request.args.get('term')
+        term = request.form['term']
         faq_manager.add_faq(term)
         user_id = request.args.get('user_id')
         existing_context = context_window.get_last_response(user_id)
@@ -83,7 +83,7 @@ def get_definition():
         return jsonify({'status': 'error', 'message': str(e)})
 
 
-app.route('/get_risk_assessment', methods=['POST', 'GET'])
+@app.route('/get_risk_assessment', methods=['POST', 'GET'])
 def get_risk_assessment_questions():
     """
     Generates a set of AI-backed risk assessment questions for the user.
@@ -104,16 +104,19 @@ def assign_risk_level():
 
     Args:
     - user_id (int): The ID of the user.
-    - quiz (list): The questions and responses to the risk assessment quiz.
+    - quiz (list): The questions to the risk assessment quiz.
+    - responses (list): The responses to the risk assessment quiz.
 
     Returns:
     - response (json): A JSON object containing the assigned risk level.
     """
     try:
         user_id = request.form['user_id']
-        responses = request.form['quiz']
-        risk_profile = risk_level_assignment(responses)
-        user_manager.update_user(user_id, risk_id=risk_profile['RiskNo'])
+        questions = request.form['quiz']
+        responses = request.form['responses']
+
+        risk_profile = risk_level_assignment(questions, responses)
+        user_manager.update_user(user_id, risk_id=risk_profile[1])
         return jsonify({'status': 'success', 'risk_level': risk_profile})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
@@ -131,7 +134,7 @@ def get_investment_options():
     - response (json): A JSON object containing the investment options.
     """
     try:
-        user_id = request.args.get('user_id')
+        user_id = request.form['user_id']
         risk_level = user_manager.get_risk_level(user_id)
         options = investment_option_generation(risk_level)
         return jsonify({'status': 'success', 'options': options})

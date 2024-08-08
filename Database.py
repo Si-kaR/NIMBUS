@@ -29,14 +29,26 @@ class Database:
             print("Disconnected from MySQL database")
 
     def execute_query(self, query, params=None):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
+        cursor = None
         try:
             cursor = self.connection.cursor()
             cursor.execute(query, params)
             self.connection.commit()
         except Error as e:
             print(f"Error: {e}")
+            self.rollback()
+        finally:
+            if cursor:
+                cursor.close()
 
     def fetch_all(self, query, params=None):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return []
+        cursor = None
         try:
             cursor = self.connection.cursor()
             cursor.execute(query, params)
@@ -44,8 +56,15 @@ class Database:
         except Error as e:
             print(f"Error: {e}")
             return []
+        finally:
+            if cursor:
+                cursor.close()
 
     def fetch_one(self, query, params=None):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return None
+        cursor = None
         try:
             cursor = self.connection.cursor()
             cursor.execute(query, params)
@@ -53,3 +72,11 @@ class Database:
         except Error as e:
             print(f"Error: {e}")
             return None
+        finally:
+            if cursor:
+                cursor.close()
+
+    def rollback(self):
+        if self.connection and self.connection.is_connected():
+            self.connection.rollback()
+            print("Transaction rolled back")
