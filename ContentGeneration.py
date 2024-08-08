@@ -490,9 +490,6 @@ def return_faqs(word_list, max_retries=3, retry_delay=2):
     return json.dumps(faqs, indent=4)
 
 
-
-=======
->>>>>>> 98289dc (feat: decluter model questions)
 def main():
     # Example usage
     # # risk_tolerances = ["Low"]
