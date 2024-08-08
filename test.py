@@ -1,5 +1,5 @@
 # Database configuration
-from config import Database
+from Database import Database
 from FinancialDataManager import FinancialDataManager
 from EducationalContentManager import EducationalContentManager, UserContentProgressManager
 from InvestmentPreferences import InvestmentPreferencesManager

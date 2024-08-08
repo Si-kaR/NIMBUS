@@ -1,3 +1,5 @@
+"""Contains all methods concerning interaction with the generative AI"""
+
 import pathlib
 from env import api_key
 import re
@@ -8,7 +10,7 @@ from markdown import Markdown
 import markdown
 from typing import Dict
 from bs4 import BeautifulSoup
-
+import json
 
 def to_markdown(text):
     text = text.replace('•', '  *')
@@ -102,10 +104,91 @@ def investment_option_generation(risk_level):
         investment_option_list["InvestmentName"] = investment_option[0:investment_option.find(':')].strip()
         investment_option_list["Description"] = investment_option[investment_option.find(':')+1:investment_option.find('Risk Level')].strip()
         investment_option_list["Risk Level"] = investment_option[investment_option.find('Risk Level'):].strip().replace('Risk Level:', '').strip()
+        investment_option_list["Risk Level"] = risk_level 
         options[index] = investment_option_list
 
 
-    return options
+    return json.dumps(options, indent=4)
+
+
+def generate_diversified_portfolio(risk_level):
+    tolerance = {1: 'High', 2: 'Medium', 3: 'Low'}
+    risk_tolerance = tolerance.get(risk_level, 'Medium')  # Default to 'Medium' if risk_level is invalid
+
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    try:
+        response = model.generate_content(
+            f"Generate a diversified portfolio for users with {risk_tolerance.lower()} investment risk tolerance. "
+            f"Include various asset classes like stocks, bonds, real estate, etc. Provide a brief description and the percentage allocation for each asset class. "
+            f"Structure it as follows: \n\n1. Asset Class: Description: Allocation: \n2. Asset Class: Description: Allocation: \n3. Asset Class: Description: Allocation: \n4. Asset Class: Description: Allocation: \n5. Asset Class: Description: Allocation:"
+            f"Ensure the responses are relevant. Do not include any information apart rom what is requested."
+        )
+    except Exception as e:
+        print(f"Error generating content: {e}")
+        return {}
+
+    portfolio = {}
+    pattern = re.compile(r'(\d+)\.\s*(.*?)\s*(?=\d+\.|$)', re.DOTALL)
+    matches = pattern.findall(response.text)
+
+    for match in matches:
+        index, asset_class = match
+        index = int(index)
+        asset_class = re.sub(r'[\n\t\r#*]', ' ', asset_class).strip()
+        asset_class_list = {}
+        asset_class_list["AssetClass"] = asset_class[0:asset_class.find(':')].strip()
+        asset_class_list["Description"] = asset_class[asset_class.find(':')+1:asset_class.find('Allocation')].strip()
+        asset_class_list["Allocation"] = asset_class[asset_class.find('Allocation'):].strip().replace('Allocation:', '').strip()
+        portfolio[index] = asset_class_list
+
+    return json.dumps(portfolio, indent=4)
+
+
+def generate_quizzes(risk_level):
+    tolerance = {1: 'High', 2: 'Medium', 3: 'Low'}
+    risk_tolerance = tolerance.get(risk_level, 'Medium')  # Default to 'Medium' if risk_level is invalid
+
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    try:
+        response = model.generate_content(
+            f"Generate a 5-question quiz to assess a person's understanding of financial concepts for users with {risk_tolerance.lower()} investment risk tolerance. "
+            f"Each question should have four options (a, b, c, d) and indicate the correct option. "
+            f"Structure it as follows: \n\n1. Question: \n   a) Option 1 \n   b) Option 2 \n   c) Option 3 \n   d) Option 4 \n   Correct Option: \n2. Question: \n   a) Option 1 \n   b) Option 2 \n   c) Option 3 \n   d) Option 4 \n   Correct Option: \n3. Question: \n   a) Option 1 \n   b) Option 2 \n   c) Option 3 \n   d) Option 4 \n   Correct Option: \n4. Question: \n   a) Option 1 \n   b) Option 2 \n   c) Option 3 \n   d) Option 4 \n   Correct Option: \n5. Question: \n   a) Option 1 \n   b) Option 2 \n   c) Option 3 \n   d) Option 4 \n   Correct Option:"
+            f"Ensure the responses are relevant. Do not include any information apart from what is requested."
+        )
+    except Exception as e:
+        print(f"Error generating content: {e}")
+        return {}
+    answer = response.text
+    end_pos = answer.find('\n\n')
+    first = answer[0:end_pos].lstrip().rstrip()
+    answer = answer[end_pos + 2:]
+    end_pos = answer.find('\n\n')
+    # print(answer[0:end_pos].lstrip().rstrip())
+
+    answer = answer + first
+
+
+
+    quizzes = {}
+    pattern = re.compile(r'(\d+)\.\s+(.*?)\n\s*a\)\s*(.*?)\n\s*b\)\s*(.*?)\n\s*c\)\s*(.*?)\n\s*d\)\s*(.*?)\n\s*\**Correct Option:\s*(\w)\**', re.DOTALL)
+    matches = pattern.findall(answer)
+    print(matches)
+    for match in matches:
+        index, question, option_a, option_b, option_c, option_d, correct_option = match
+        index = int(index)
+        quizzes[index] = {
+            "Question": question.strip(),
+            "Options": {
+                "a": option_a.strip(),
+                "b": option_b.strip(),
+                "c": option_c.strip(),
+                "d": option_d.strip()
+            },
+            "Correct Option": correct_option.strip()
+        }
+
+    return json.dumps(quizzes, indent=4)
 
 
 def main():
@@ -133,7 +216,23 @@ def main():
     b = risk_level_assignment(a, responses)
     print(b)
     c = investment_option_generation(b)
-    print(c)
+    # print(c)
+
+    d = generate_diversified_portfolio(b)
+    # print(d)
+
+    e = generate_quizzes(b)
+    print(e)
+    # e = json.loads(e)
+    # print(e)
+
+    # for index, quiz in e.items():
+    #     print(f"{index}. Question: {quiz['Question']}")
+    #     print(f"   a) {quiz['Options']['a']}")
+    #     print(f"   b) {quiz['Options']['b']}")
+    #     print(f"   c) {quiz['Options']['c']}")
+    #     print(f"   d) {quiz['Options']['d']}")
+    #     print(f"   Correct Option: {quiz['Correct Option']}\n")
 
 
 
