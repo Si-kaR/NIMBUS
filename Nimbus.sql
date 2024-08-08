@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2024 at 01:08 AM
+-- Generation Time: Aug 08, 2024 at 05:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,18 @@ SET time_zone = "+00:00";
 --
 -- Database: `nimbus`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `context_window`
+--
+
+CREATE TABLE `context_window` (
+  `context_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `last_response` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -197,6 +209,19 @@ INSERT INTO `portfolios` (`PortfolioID`, `UserID`, `PortfolioName`, `CreatedAt`)
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `recommended_investments`
+--
+
+CREATE TABLE `recommended_investments` (
+  `rec_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `Risk_Level` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `risk_levels`
 --
 
@@ -255,6 +280,13 @@ INSERT INTO `users` (`UserID`, `Username`, `PasswordHash`, `Email`, `RiskToleran
 --
 
 --
+-- Indexes for table `context_window`
+--
+ALTER TABLE `context_window`
+  ADD PRIMARY KEY (`context_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `educationalcontent`
 --
 ALTER TABLE `educationalcontent`
@@ -290,6 +322,14 @@ ALTER TABLE `portfolios`
   ADD KEY `UserID` (`UserID`);
 
 --
+-- Indexes for table `recommended_investments`
+--
+ALTER TABLE `recommended_investments`
+  ADD PRIMARY KEY (`rec_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `Risk_Level` (`Risk_Level`);
+
+--
 -- Indexes for table `risk_levels`
 --
 ALTER TABLE `risk_levels`
@@ -314,6 +354,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `context_window`
+--
+ALTER TABLE `context_window`
+  MODIFY `context_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `educationalcontent`
@@ -346,6 +392,12 @@ ALTER TABLE `portfolios`
   MODIFY `PortfolioID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `recommended_investments`
+--
+ALTER TABLE `recommended_investments`
+  MODIFY `rec_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `risk_levels`
 --
 ALTER TABLE `risk_levels`
@@ -366,6 +418,12 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `context_window`
+--
+ALTER TABLE `context_window`
+  ADD CONSTRAINT `context_window_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`);
 
 --
 -- Constraints for table `educationalcontent`
@@ -391,6 +449,13 @@ ALTER TABLE `portfolioassets`
 --
 ALTER TABLE `portfolios`
   ADD CONSTRAINT `portfolios_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`);
+
+--
+-- Constraints for table `recommended_investments`
+--
+ALTER TABLE `recommended_investments`
+  ADD CONSTRAINT `recommended_investments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`),
+  ADD CONSTRAINT `recommended_investments_ibfk_2` FOREIGN KEY (`Risk_Level`) REFERENCES `risk_levels` (`risk_id`);
 
 --
 -- Constraints for table `usercontentprogress`
