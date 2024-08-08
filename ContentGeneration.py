@@ -36,8 +36,8 @@ def extract_title_and_content(response_text):
 genai.configure(api_key=api_key)
 
 
-def generate_content(risk_tolerances, max_retries=3, retry_delay=2):
-    categories = ["PersonalFinance", "Budgeting", "Investing"]
+def generate_content(risk_tolerances:list, category_list:list, max_retries=3, retry_delay=2):
+    categories = category_list
     content_types = ["Article"]
 
     content = {
@@ -458,7 +458,6 @@ def get_term_meaning(term, context=None, max_retries=3, retry_delay=2):
     return {"error": "Failed to generate content after multiple attempts."}
 
 
-<<<<<<< HEAD
 def return_faqs(word_list, max_retries=3, retry_delay=2):
     model = genai.GenerativeModel("gemini-1.5-flash")
     faqs = {}
@@ -492,15 +491,16 @@ def return_faqs(word_list, max_retries=3, retry_delay=2):
 
 def main():
     # Example usage
-    # # risk_tolerances = ["Low"]
-    # term = "Compound Interest"
-    # answer = get_term_meaning(term)
-    # follow_up = "What is the formula for calculating compound interest?"
-    # print(json.dumps(get_term_meaning(follow_up, answer["Explanation"]), indent=4))
-    # content = generate_content(risk_tolerances)
+    # risk_tolerances = ["Low"]
+    term = "Compound Interest"
+    answer = get_term_meaning(term)
+    # print(answer)
+    follow_up = "What is the formula for calculating compound interest?"
+    print(json.dumps(get_term_meaning(follow_up, answer["Explanation"]), indent=4))
+    # content = generate_content(risk_tolerances, ['Personal Finance'])
     # print(content)
-    word_list = ["Compound Interest", "Inflation", "Diversification"]
-    print(return_faqs(word_list))
+    # word_list = ["Compound Interest", "Inflation", "Diversification"]
+    # print(return_faqs(word_list))
 
     # # Print the generated content
     # for risk_tolerance, categories in content.items():
@@ -516,13 +516,13 @@ def main():
     #                 print(f"  risk_type: {item['risk_type']}\n")
 
     # a = risk_assessment_questions()
-    # print(a)
+    # # print(a)
     # new_arr = ['a', 'b', 'c', 'a', 'a']
     # responses = '\n'.join(new_arr)
     # b = risk_level_assignment(a, responses)
-    # # print(b)
-    # c = investment_option_generation(b)
-    # # print(c)
+    # print(b)
+    # c = investment_option_generation(1)
+    # print(c)
 
     # d = generate_diversified_portfolio(1)
     # print(d)
