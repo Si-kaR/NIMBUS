@@ -34,12 +34,12 @@ class FAQManager:
             print(f"Error: {e}")
 
     # Read
-    def get_faq(self, search_term, number_of_results=10):
+    def get_faq(self, number_of_results=10):
         query = """
-        SELECT search_term FROM frequent_terms WHERE search_term LIKE %s ORDER BY frequency DESC LIMIT %s
+        SELECT search_term FROM frequent_terms ORDER BY frequency DESC LIMIT %s
         """
         try:
-            self.cursor.execute(query, (f"%{search_term}%", number_of_results))
+            self.cursor.execute(query, (number_of_results,))
             result = self.cursor.fetchall()
             return result
         except Exception as e:
