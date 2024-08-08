@@ -364,15 +364,50 @@ def get_term_meaning(term, context=None, max_retries=3, retry_delay=2):
     # If all attempts fail, return an error message
     return {"error": "Failed to generate content after multiple attempts."}
 
+
+def return_faqs(word_list, max_retries=3, retry_delay=2):
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    faqs = {}
+
+    for word in word_list:
+        attempt = 0
+        while attempt < max_retries:
+            try:
+                response = model.generate_content(
+                    f"Provide a detailed explanation and breakdown of the term '{word}'. Include its definition, usage, and any relevant examples. "
+                    f"Ensure the explanation is clear and comprehensive, similar to a dictionary entry."
+                    f"Limit to 100 words. Do not use bullets, headings or paragraphs. Just write it as a single block of text. Do not repeat the term in the explanation."
+                )
+                answer = response.text.lstrip().rstrip()
+
+                # Extract the explanation and breakdown
+                explanation = answer.strip()
+
+                faqs[word] = explanation
+                break  # Exit the retry loop if successful
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed for word '{word}': {e}")
+                attempt += 1
+                time.sleep(retry_delay)
+
+        if word not in faqs:
+            faqs[word] = "Failed to generate content after multiple attempts."
+
+    return json.dumps(faqs, indent=4)
+
+
+
 def main():
     # Example usage
-    # risk_tolerances = ["Low"]
-    term = "Compound Interest"
-    answer = get_term_meaning(term)
-    follow_up = "What is the formula for calculating compound interest?"
-    print(json.dumps(get_term_meaning(follow_up, answer["Explanation"]), indent=4))
+    # # risk_tolerances = ["Low"]
+    # term = "Compound Interest"
+    # answer = get_term_meaning(term)
+    # follow_up = "What is the formula for calculating compound interest?"
+    # print(json.dumps(get_term_meaning(follow_up, answer["Explanation"]), indent=4))
     # content = generate_content(risk_tolerances)
     # print(content)
+    word_list = ["Compound Interest", "Inflation", "Diversification"]
+    print(return_faqs(word_list))
 
     # # Print the generated content
     # for risk_tolerance, categories in content.items():
