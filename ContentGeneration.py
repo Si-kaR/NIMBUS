@@ -11,6 +11,8 @@ import time
 import ModelQuestions
 
 
+
+
 def to_markdown(text):
     text = text.replace("•", "  *")
     indented_text = textwrap.indent(text, "> ", predicate=lambda _: True)
@@ -491,12 +493,12 @@ def return_faqs(word_list, max_retries=3, retry_delay=2):
 
 def main():
     # Example usage
-    # risk_tolerances = ["Low"]
-    term = "Compound Interest"
-    answer = get_term_meaning(term)
-    # print(answer)
-    follow_up = "What is the formula for calculating compound interest?"
-    print(json.dumps(get_term_meaning(follow_up, answer["Explanation"]), indent=4))
+    risk_tolerances = ["Low"]
+    # term = "Compound Interest"
+    # answer = get_term_meaning(term)
+    # # print(answer)
+    # follow_up = "What is the formula for calculating compound interest?"
+    # print(json.dumps(get_term_meaning(follow_up, answer["Explanation"]), indent=4))
     # content = generate_content(risk_tolerances, ['Personal Finance'])
     # print(content)
     # word_list = ["Compound Interest", "Inflation", "Diversification"]
