@@ -36,8 +36,8 @@ def extract_title_and_content(response_text):
 genai.configure(api_key=api_key)
 
 
-def generate_content(risk_tolerances:list, category_list:list, max_retries=3, retry_delay=2):
-    categories = category_list
+def generate_content(risk_tolerances:list, max_retries=3, retry_delay=2):
+    categories = ["Personal Finance", "Investing", "Retirement Planning", "Budgeting"]
     content_types = ["Article"]
 
     content = {

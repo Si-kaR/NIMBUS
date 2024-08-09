@@ -172,7 +172,7 @@ def get_finance_quiz():
     - response (json): A JSON object containing the quiz questions.
     """
     try:
-        user_id = request.args.get('user_id')
+        user_id = request.form['user_id']
         risk_level = user_manager.get_risk_level(user_id)
         quiz = generate_quizzes(risk_level)
         return jsonify({'status': 'success', 'quiz': quiz})
@@ -203,20 +203,20 @@ def get_finance_content():
 
     Args:
     - risk_levels (list): A list of risk levels that the user wants content for.
-    - categories (list): A list of content categories that the user wants to explore.
 
     Returns:
     - response (json): A JSON object containing the finance-related content.
     """
     try:
         risk_levels = request.form.getlist('risk_levels')
-        categories = request.form.getlist('categories')
-        content = generate_content(risk_levels, categories)
+        print(risk_levels)
+
+        content = generate_content(risk_levels)
         return jsonify({'status': 'success', 'content': content})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
-app.route('/income_allocation', methods=['POST'])
+@app.route('/income_allocation', methods=['POST'])
 def allocate_income():
     """
     Allocate the user's income based on the specified financial data.
@@ -228,10 +228,19 @@ def allocate_income():
     - response (json): A JSON object containing the updated user data.
     """
     try:
-        user_data = request.form
-        acceptable = enforce_100_percent_rule(user_data)
-        updated_data = ai_recommendations(acceptable)
+        print("Request form data:", request.form)
+
+        total_income = float(request.form['total_income']) if 'total_income' in request.form else 0
+        amount_invested = float(request.form['amount_invested']) if 'amount_invested' in request.form else 0
+        amount_essentials = float(request.form['amount_essentials']) if 'amount_essentials' in request.form else 0
+        amount_discretionary = float(request.form['amount_discretionary']) if 'amount_discretionary' in request.form else 0
+        risk_tolerance = request.form['risk_tolerance'] if 'risk_tolerance' in request.form else 'Low'
+
+        print(total_income, amount_invested, amount_essentials, amount_discretionary, risk_tolerance)
+
+        updated_data = ai_recommendations(total_income, amount_invested, amount_essentials, amount_discretionary, risk_tolerance)
         return jsonify({'status': 'success', 'updated_data': updated_data})
+    
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
     
