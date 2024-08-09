@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2024 at 08:01 PM
+-- Generation Time: Aug 09, 2024 at 05:08 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,6 +44,14 @@ CREATE TABLE `frequent_terms` (
   `frequency` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `frequent_terms`
+--
+
+INSERT INTO `frequent_terms` (`search_term`, `frequency`) VALUES
+('cryptocurrency', 1),
+('money', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -76,6 +84,15 @@ CREATE TABLE `users` (
   `risk_id` int(11) DEFAULT NULL,
   `CreatedAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `risk_id`, `CreatedAt`) VALUES
+(1, 'john_doe', 2, '2024-08-08 18:35:54'),
+(2, 'e-c-centric', 2, '2024-08-08 21:47:37'),
+(3, 'testuser', 2, '2024-08-09 02:35:29');
 
 --
 -- Indexes for dumped tables
@@ -128,7 +145,7 @@ ALTER TABLE `risk_levels`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
