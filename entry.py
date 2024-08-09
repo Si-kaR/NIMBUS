@@ -5,8 +5,9 @@ from FAQManager import *
 from UserManager import *
 from Income_Allocation import *
 from UserManager import *
+from env import *
 
-database = Database(host="localhost", database="nimbus", user="root", password="")
+database = Database(host=DBHOST, database=DBNAME, user=DBUSER, password=DBPASS)
 database.connect()
 
 

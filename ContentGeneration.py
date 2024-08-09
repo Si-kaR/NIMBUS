@@ -1,6 +1,6 @@
 """Contains all methods concerning interaction with the generative AI"""
 
-from env import api_key
+from env import API_KEY
 import re
 import textwrap
 import google.generativeai as genai
@@ -35,7 +35,7 @@ def extract_title_and_content(response_text):
     return title, content
 
 
-genai.configure(api_key=api_key)
+genai.configure(api_key=API_KEY)
 
 
 def generate_content(risk_tolerances:list, max_retries=3, retry_delay=2):
