@@ -26,6 +26,9 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `context_window`
 --
+DROP DATABASE IF EXISTS nimbus;
+CREATE DATABASE nimbus;
+USE nimbus;
 
 CREATE TABLE `context_window` (
   `context_id` int(11) NOT NULL,
