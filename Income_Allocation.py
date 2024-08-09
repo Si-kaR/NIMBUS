@@ -75,7 +75,7 @@ def ai_recommendations(total_income, amount_invested, amount_essentials, amount_
     user_data['amount_essentials'] = amount_essentials
     user_data['amount_discretionary'] = amount_discretionary
     user_data['risk_tolerance'] = risk_tolerance
-    
+
     user_data['essentials_percentage'] = user_data['amount_essentials'] / user_data['total_income'] * 100
     user_data['investments_percentage'] = user_data['amount_invested'] / user_data['total_income'] * 100
     user_data['discretionary_percentage'] = user_data['amount_discretionary'] / user_data['total_income'] * 100
@@ -213,3 +213,5 @@ def main():
             ))
         except Exception as e:
             print(f"An error occurred: {e}")
+
+
