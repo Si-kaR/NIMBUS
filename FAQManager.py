@@ -35,6 +35,8 @@ class FAQManager:
         """
         try:
             result = self.db.fetch_all(query, (number_of_results,))
+            for i in range(len(result)):
+                result[i] = result[i][0]
             return result
         except Exception as e:
             print(f"Error: {e}")
@@ -71,3 +73,9 @@ class FAQManager:
         except Exception as e:
             print(f"Error: {e}")
             return None
+
+# db = Database.Database(host='localhost', database = 'nimbus', user = 'root', password = '')
+# db.connect()
+# test = FAQManager(db)
+
+# print(test.get_faq())

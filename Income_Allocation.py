@@ -1,5 +1,6 @@
 import joblib
 import pandas as pd
+import json
 
 def validate_user_data(user_data):
     """
@@ -55,7 +56,7 @@ def enforce_100_percent_rule(user_data):
     
     return user_data
 
-def ai_recommendations(user_data):
+def ai_recommendations(total_income, amount_invested, amount_essentials, amount_discretionary, risk_tolerance):
     """
     Generate AI-based financial recommendations based on the user's financial data.
 
@@ -68,6 +69,19 @@ def ai_recommendations(user_data):
     Raises:
     - RuntimeError: If an error occurs during the financial status, savings, or investments prediction.
     """
+    user_data = {}
+    user_data['total_income'] = total_income
+    user_data['amount_invested'] = amount_invested
+    user_data['amount_essentials'] = amount_essentials
+    user_data['amount_discretionary'] = amount_discretionary
+    user_data['risk_tolerance'] = risk_tolerance
+    
+    user_data['essentials_percentage'] = user_data['amount_essentials'] / user_data['total_income'] * 100
+    user_data['investments_percentage'] = user_data['amount_invested'] / user_data['total_income'] * 100
+    user_data['discretionary_percentage'] = user_data['amount_discretionary'] / user_data['total_income'] * 100
+    user_data['disposable_percentage'] = 100 - (user_data['essentials_percentage'] + user_data['investments_percentage'] + user_data['discretionary_percentage'])
+
+
     # Validate the user data before processing
     validate_user_data(user_data)
     
@@ -137,7 +151,7 @@ def ai_recommendations(user_data):
         'percentage_left': remaining_percentage
     }
 
-    return recommendations
+    return json.dumps(recommendations, indent=4)
 
 # Load the pipelines and models
 try:
